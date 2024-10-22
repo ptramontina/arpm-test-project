@@ -19,6 +19,8 @@ class OrderController extends Controller
             /**
              * We should add the relationship on the model. With that, it becomes easiear to read, and more efficient
              * since Laravel can pre load all the cart items of the orders.
+             * I assumed that in the old code, '$order->items' are the cart items from the model. In that case, in order to 
+             * let it cleaner, I named them 'cartItems'.
              */
             $itemsCount = $order->cartItems->count();
 
@@ -26,6 +28,10 @@ class OrderController extends Controller
              * We run one reduce here to make the sum of the price/quantity
              */
             $totalAmount = $order->cartItems->reduce(function (int $carry, CartItem $cartItem) {
+                /**
+                 * $product = $item->product; 
+                 * I removed this line from previous code as it's not needed.
+                 */
                 return $carry + ($cartItem->price * $cartItem->quantity);
             }, 0);
                                     

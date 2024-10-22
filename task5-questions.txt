@@ -1,17 +1,20 @@
 
 
 5 A)
-That function schedules a Laravel Artisan Command, called "app:example-command", which will be executed once per hour.
-This job will be ensured to run only in one server, which means that the server that picks the job will create a lock, to avoid other servers to run the same job.
-Besides, it will not overlap, which means that if the current job takes more than one hour, and the trigger of the job is executed again, the new instance will not be fired.
-Finally, it will run in pararlel with other tasks. This is normally good when we know that the job might take too long to finish. So, if multiple jobs start at the same time, this one will run along with the others.
+    That function schedules a Laravel Artisan Command, called "app:example-command", which will be executed once per hour.
+    This job will be ensured to run only in one server, which means that the server that picks the job will create a lock, to avoid other servers to run the same job.
+    Besides, it will not overlap, which means that if the current job takes more than one hour, and the trigger of the job is executed again, the new instance will not be fired.
+    Finally, it will run in pararlel with other tasks. This is normally good when we know that the job might take too long to finish. So, if multiple jobs start at the same time, this one will run along with the others.
 
-5 B) I hardly ever used Context, differently from Cache. Context is used to share data between multiple parts of the application. 
-For instance, if you need to add user data from one request, and use in a later Job.
-Cache is different, as it is a Facade that allows the application to have a robust cache system. 
-This facace is configurable, and can be used from simple local storage files, to a Redis instance. It also offers multiple helpers to work with the Log.
+5 B) 
+    I hardly ever used Context, differently from Cache. Context is used to share data between multiple parts of the application. 
+    For instance, if you need to add user data from one request, and use in a later Job.
+    Cache is different, as it is a Facade that allows the application to have a robust cache system. 
+    This facace uses a config file (cache.php) which allows us to configure multiple options.
+    For instance, we can choose between simple local storage files or a Redis instance. It also offers multiple helper functions.
 
-5 C) Every time that we use $model->update, laravel fires an event (that happens with create, update or delete cases).
-With that, we can use observers to execute actions when any model is "touched".
-The difference with the updateQuietly is that the event is not fired when this method is executed.
-It's useful when you just want to update the model, without any other processing happening in the backgroud (by the events and observers).
+5 C) 
+    Every time that we use $model->update, laravel fires an event (that happens with create, update or delete cases).
+    With that, we can use observers to execute actions when any model is "touched".
+    The difference with the updateQuietly is that the event is not fired when this method is executed.
+    It's useful when you just want to update the model, without any other processing happening in the backgroud (by the events and observers).

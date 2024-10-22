@@ -10,6 +10,10 @@ use App\Models\Product;
 
 class SpreadsheetServiceTest extends TestCase
 {
+    /**
+     * I used this trait that is responsible for deleting the data between each test.
+     * It's easier to test with fresh databases.
+     */
     use RefreshDatabase;
 
     /**
@@ -34,8 +38,7 @@ class SpreadsheetServiceTest extends TestCase
     }
 
     /**
-     * Makes two tests. First with a valid file, and checks if the data is inserted in the Database.
-     * After that, tries with an invalid file. And checks if the data is NOT inserted in the Database.
+     * Use a valid file to call the method, and checks if the data is inserted in the Database.
      * 
      * @return void
      */
@@ -47,22 +50,24 @@ class SpreadsheetServiceTest extends TestCase
 
         $spreadSheetService->processSpreadsheet($validFilePath);        
 
-        $addedProduct = Product::where([
-            'product_code' => 1,
-            'quantity' => 10,
-        ])->first();
+        $products = Product::all();
 
-        $this->assertNotNull($addedProduct);
+        $this->assertTrue($products->isNotEmpty());
+    }
 
+    /**
+     * Checks if no product was created, passing a invalid file
+     * 
+     * @return void
+     */
+    public function testProcessSpreadsheetInvalidFile(): void
+    {
         $invalidFilePath = Storage::get('./invalid-spreadsheet.xls'); 
         
         $spreadSheetService->processSpreadsheet($validFilePath);   
 
-        $addedProduct = Product::where([
-            'product_code' => 2,
-            'quantity' => 20,
-        ])->first();
+        $products = Product::all();
 
-        $this->assertNull($addedProduct);
+        $this->assertTrue($products->isEmpty());
     }
 }

@@ -27,7 +27,7 @@ return $offices->mapToGroups(function (array $item, int $key) {
     return [$item['city'] => $item['office']];
 })->map(function ($offices, $city) use ($employees) {  
     /**
-     * This second map, actually looks for each employee and add to relevant offices
+     * This second map looks for each employee and add to relevant offices
      */      
     $array = [];
     $offices->each(function ($office) use ($employees, &$array, $city) {
