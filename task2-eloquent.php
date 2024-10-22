@@ -10,23 +10,36 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::all();
-        $orderData = [];
-        
-        $orderData = Order::with('cartItems')
+        $orders = Order::with('cartItems')
             ->where('status', 'completed')
             ->orderByDesc('completed_at')
             ->get();
-            
-        $orderData = $orderData->map(function($order) {
+                            
+        $orders = $orders->map(function($order) {
+            /**
+             * We should add the relationship on the model. With that, it becomes easiear to read, and more efficient
+             * since Laravel can pre load all the cart items of the orders.
+             */
             $itemsCount = $order->cartItems->count();
+
+            /**
+             * We run one reduce here to make the sum of the price/quantity
+             */
             $totalAmount = $order->cartItems->reduce(function (int $carry, CartItem $cartItem) {
                 return $carry + ($cartItem->price * $cartItem->quantity);
-            }, 0);       
-                    
+            }, 0);
+                                    
+            /**
+             * Again, use the model relationship to find the cartItems. By adding the () it returns a query builder,
+             * and we can just add the necessary where clauses.
+             */
             $lastAddedToCart = $order->cartItems()->orderByDesc('created_at')->first()?->created_at;
             $completedOrderExists = $order->status === 'completed';
             
+            /**
+             * Now we return the result of the map. The ordering was made before, by using Eloquent's methods 
+             * to order and filter the relevant orders.
+             */
             return [
                 'order_id' => $order->id,
                 'customer_name' => $order->customer,
@@ -38,7 +51,7 @@ class OrderController extends Controller
             ];
         });
         
-        return view('orders.index', ['orders' => $orderData]);
+        return view('orders.index', ['orders' => $orders]);
     }
 }
 
