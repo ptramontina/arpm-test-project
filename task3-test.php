@@ -62,6 +62,8 @@ class SpreadsheetServiceTest extends TestCase
      */
     public function testProcessSpreadsheetInvalidFile(): void
     {
+        $spreadSheetService = app()->make(SpreadsheetService::class, []);
+        
         $invalidFilePath = Storage::get('./invalid-spreadsheet.xls'); 
         
         $spreadSheetService->processSpreadsheet($validFilePath);   
